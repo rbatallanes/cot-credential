@@ -29,7 +29,7 @@ function App() {
     justifyContent: 'center',
     alignItems: 'center',
   }}>
-    <Card style={{ width: '20rem', margin: '5px'}} >
+    <Card style={{ width: '24rem', margin: '5px'}} >
       
       <Card.Header as="h3" style={{ backgroundColor:'#0066ff'}}>
         <Navbar>
