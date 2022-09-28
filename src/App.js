@@ -1,21 +1,90 @@
-import React, { useRef }  from 'react';
+import React, { useEffect, useRef, useState }  from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import { Router,Route, Routes } from 'react-router-dom';
 import Card from 'react-bootstrap/Card';
-import { Alert, ListGroup, Row, Table } from 'react-bootstrap';
+import { Alert, Button, ListGroup, Row, Table } from 'react-bootstrap';
 
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
+import { getPer } from './Services/Persona';
+import axios from 'axios';
 
 function App() {
 
   const inputFile = useRef(null) 
+  const [per,setPer] = useState({})
+  const [msj,setMsj] = useState('')
+  const [estado,setEstado] = useState('')
 
-  const onButtonClick = () => {
+  const [file, setFile] = useState(null);
+
+  /* const onButtonClick = () => {
    inputFile.current.click();
-  };
+   console.log(inputFile);
+  }; */
+
+  const handleFileChange = (event) => {
+    setFile(event.target.files[0]);
+    console.log(event.target.files[0])
+  }
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const data = new FormData();
+
+		data.append('File', file);
+
+		fetch(
+			'http://localhost:8080/api/image-upload',
+			{
+        method: "POST",
+				body: file,
+        mode:"cors",
+        //headers: {"Content-type":"application/x-www-form-urlencoded"}
+        headers: {"Content-type":"multipart/form-data"}
+      }
+		).then((response) => response.json())
+			.then((result) => {
+				console.log('Success:', result);
+			})
+			.catch((error) => {
+				console.error('Error:', error);
+			});
+
+    // axios.post("http://localhost:8000/api/personas", data, { 
+    //   headers: {
+    //     "Content-Type": "multipart/form-data",
+    //   }
+    // }).then(res => { // then print response status
+    //     console.log(res.statusText)
+    // }).catch((error) => {
+    //   	console.error('Error:', error);
+    // });
+  }
+
+  useEffect(()=>{
+    getPer(1010).then(response=>{
+      
+      if(response.fchBaj === null){
+        setPer(response)
+        setEstado('Activo')
+      }else{
+        console.log('baja de socio')
+        setPer([])
+        setEstado('Inactivo')
+      }
+      
+    }).catch(err=>{
+        setMsj(err.message)
+        setPer([])
+
+        setTimeout(() => {
+            setMsj('')
+        }, 4000);
+    })
+  },[])
 
   return (
     // <Router>
@@ -29,7 +98,7 @@ function App() {
     justifyContent: 'center',
     alignItems: 'center',
   }}>
-    <Card style={{ width: '25rem', margin: '5px'}} >
+    <Card style={{ width: '23rem', margin: '5px'}} >
       
       <Card.Header as="h3" style={{ backgroundColor:'#0066ff'}}>
         <Navbar>
@@ -64,19 +133,25 @@ function App() {
           <strong>Agrega tu foto haciendo click en la imagen</strong>
         </Alert>
 
-      <Card.Body className="text-center mt-0 mb-1" onClick={onButtonClick}>
+      <Card.Body className="text-center mt-0 mb-1"> 
         <Card.Img variant="" src=".././usr.png" style={{width: '100px', height: '110px',cursor:'pointer'}} alt='Socio'/>
-        <input type='file' id='file' ref={inputFile} style={{display: 'none'}}/>
+        <input type='file' id='file' ref={inputFile} style={{display: 'block'}} multiple
+            onChange={handleFileChange}/>
         <Card.Text style={{ color: '#0066ff'}}>
-          <strong>HEREDIA, ALEJANDRA</strong>
+          <strong>{per.apellido || ''} {per.nombre || ''}</strong>
         </Card.Text>
         
+        <Button 
+            className="btn btn-primary mt-3" 
+            onClick={handleSubmit}
+            >Upload</Button>
+
       </Card.Body>
       <ListGroup className="list-group-flush mb-0">
         <ListGroup.Item className="m-0">
-          <p><b style={{ color: '#0066ff'}}>SOCIO:</b> <strong>1010</strong></p>
-          <p><b style={{ color: '#0066ff'}}>DNI:</b> <strong>17494199</strong></p>
-          <p><b style={{ color: '#0066ff'}}>ALTA:</b> <strong>23/01/90</strong></p>
+          <p><b style={{ color: '#0066ff'}}>SOCIO:</b> <strong>{per.id || ''}</strong></p>
+          <p><b style={{ color: '#0066ff'}}>DNI:</b> <strong>{per.dni || ''}</strong></p>
+          <p><b style={{ color: '#0066ff'}}>ALTA:</b> <strong>{new Date(per.fchAlt).toLocaleDateString() || ''}</strong></p>
         </ListGroup.Item>
       </ListGroup>
 
@@ -102,8 +177,8 @@ function App() {
         </tbody>
       </Table>
       <ListGroup className="list-group-flush mb-0 text-center">
-        <ListGroup.Item action variant="primary">
-          <p>Estado:<b> Activo</b></p>
+        <ListGroup.Item action variant={estado==='Activo'?'primary ':'danger'}>
+          <p>Estado:<b> {estado}</b></p>
         </ListGroup.Item>
       </ListGroup>
 
