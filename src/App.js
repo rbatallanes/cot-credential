@@ -19,15 +19,20 @@ function App() {
   const [estado,setEstado] = useState('')
 
   const [file, setFile] = useState(null);
+  const [previewImage, setPreviewImage] = useState(null);
 
-  /* const onButtonClick = () => {
-   inputFile.current.click();
-   console.log(inputFile);
-  }; */
+  const onButtonClick = () => {
+  //  inputFile.current.click();
+  //  console.log(inputFile);
+    document.getElementById("file").click()
+  }
 
   const handleFileChange = (event) => {
     setFile(event.target.files[0]);
+    const objectURL = URL.createObjectURL(event.target.files[0])
+    //setPreviewImage(objectURL)
     console.log(event.target.files[0])
+    handleSubmit(event)
   }
 
   const handleSubmit = (event) => {
@@ -37,40 +42,39 @@ function App() {
 		data.append('file', file);
     //data.append('usr', 1010);
 
-		fetch(
-			'http://localhost:8080/api/personas/1010',
-			{
-        method: "POST",
-				body: data,
-        //mode:"cors",
-        //headers: {"Content-type":"application/x-www-form-urlencoded"}
-        //headers: {"Content-type":"multipart/form-data"}
-      }
-		).then((response) => response.json())
-			.then((result) => {
-				console.log('Success:', result);
-			})
-			.catch((error) => {
-				console.error('Error:', error);
-			});
-
-    // axios.post("http://localhost:8080/api/personas", data, { 
-    //   headers: {
-    //     "Content-Type": "multipart/form-data",
+		// fetch(
+		// 	'http://localhost:8080/api/personas/1010',
+		// 	{
+    //     method: "POST",
+		// 		body: data,
     //   }
-    // }).then(res => { // then print response status
-    //     console.log(res.statusText)
-    // }).catch((error) => {
-    //   	console.error('Error:', error);
-    // });
+		// ).then((response) => response.json())
+		// 	.then((result) => {
+		// 		console.log('Success:', result);
+		// 	})
+		// 	.catch((error) => {
+		// 		console.error('Error:', error);
+		// 	});
+
+    axios.post(`http://localhost:8080/api/personas/${per.id}`, data, { 
+      headers: {
+        "Content-Type": "multipart/form-data",
+      }
+    }).then(res => { // then print response status
+        console.log(res)
+        setPreviewImage(res.data)
+    }).catch((error) => {
+      	console.error('Error:', error);
+    });
   }
 
   useEffect(()=>{
-    getPer(1010).then(response=>{
+    getPer(1129).then(response=>{
       
       if(response.fchBaj === null){
         setPer(response)
         setEstado('Activo')
+        //setPreviewImage(response.picture)
       }else{
         console.log('baja de socio')
         setPer([])
@@ -86,6 +90,15 @@ function App() {
         }, 4000);
     })
   },[])
+
+  useEffect(()=>{
+    let img = per.picture === null || !per.picture
+           ? '.././usr.png'
+           : `http://localhost:8080/api/files/${per.picture}`
+  
+      setPreviewImage(img)
+           
+  },[per,previewImage])
 
   return (
     // <Router>
@@ -134,10 +147,12 @@ function App() {
           <strong>Agrega tu foto haciendo click en la imagen</strong>
         </Alert>
 
-      <Card.Body className="text-center mt-0 mb-1"> 
-        <Card.Img variant="" src=".././usr.png" style={{width: '100px', height: '110px',cursor:'pointer'}} alt='Socio'/>
+      <Card.Body className="text-center mt-0 mb-1" onClick={onButtonClick}> 
+        <Card.Img variant="" src= { previewImage } 
+        
+          style={{width: '100px', height: '110px',cursor:'pointer'}} alt='Socio'/>
         <input type='file' id='file' ref={inputFile} style={{display: 'block'}} multiple
-            onChange={handleFileChange}/>
+          onChange={handleFileChange}/>
         <Card.Text style={{ color: '#0066ff'}}>
           <strong>{per.apellido || ''} {per.nombre || ''}</strong>
         </Card.Text>
