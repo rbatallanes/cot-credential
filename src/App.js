@@ -34,16 +34,17 @@ function App() {
     event.preventDefault();
     const data = new FormData();
 
-		data.append('File', file);
+		data.append('file', file);
+    //data.append('usr', 1010);
 
 		fetch(
-			'http://localhost:8080/api/image-upload',
+			'http://localhost:8080/api/personas/1010',
 			{
         method: "POST",
-				body: file,
-        mode:"cors",
+				body: data,
+        //mode:"cors",
         //headers: {"Content-type":"application/x-www-form-urlencoded"}
-        headers: {"Content-type":"multipart/form-data"}
+        //headers: {"Content-type":"multipart/form-data"}
       }
 		).then((response) => response.json())
 			.then((result) => {
@@ -53,7 +54,7 @@ function App() {
 				console.error('Error:', error);
 			});
 
-    // axios.post("http://localhost:8000/api/personas", data, { 
+    // axios.post("http://localhost:8080/api/personas", data, { 
     //   headers: {
     //     "Content-Type": "multipart/form-data",
     //   }
