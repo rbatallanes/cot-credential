@@ -13,12 +13,16 @@ import Nav from 'react-bootstrap/Nav';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css'
+import Mensaje from './components/Mensaje';
 
 function App() {
 
   const inputFile = useRef(null) 
   const [per,setPer] = useState({})
-  const [msj,setMsj] = useState('Agrega tu foto haciendo click en la imagen')
+  const [msj,setMsj] = useState('')
+
+  const [tipo, setTipo] = useState('danger')
+
   const [estado,setEstado] = useState('')
   const [imgDefault, setImgDefault] = useState(true)
 
@@ -88,7 +92,7 @@ function App() {
 
         setTimeout(() => {
             setMsj('')
-        }, 4000);
+        }, 5000);
     })
   },[])
 
@@ -115,8 +119,26 @@ function App() {
           per.picture = res.data // VER
           setPreviewImage(res.data)
           setImgDefault(false)
+          
+          setMsj('Tu foto ya está lista!!')
+          setTipo('success')
+
+          setTimeout(()=>{
+              setMsj('')
+              setTipo('')
+            },3000)
       }).catch((error) => {
-          console.error('Error:', error);
+        if(error.response.status === 417){
+          setMsj(error.response.data)
+          setTipo('danger')
+          setTimeout(()=>{
+              setMsj('')
+              setTipo('')
+            },5000)
+
+          return
+        }
+        console.error('Error:', error);
       });
     }
     
@@ -172,10 +194,16 @@ function App() {
               </Alert>
           }
 
+          {msj && <Mensaje tipo={tipo}>{msj}</Mensaje>}
+
           <Card.Body className="text-center mt-0 mb-1" onClick={onButtonClick} border="primary"> 
             <Card.Img variant="" src= { previewImage } 
             
-              style={{width: '120px', height: '130px',cursor:'pointer'}} alt='Socio'/>
+              style={{width: '10rem',
+                height: '10rem',
+                cursor: 'pointer',
+                objectFit: 'cover'}} 
+                alt='Socio'/>
             <input type='file' id='file' accept="image/png, image/gif, image/jpeg, image/jpg, image/svg" ref={inputFile} 
                     style={{display: 'none'}} multiple onChange={handleFileChange}/>
             <Card.Text style={{ color: '#0066ff'}}>
