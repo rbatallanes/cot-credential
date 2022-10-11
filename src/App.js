@@ -65,7 +65,7 @@ function App() {
 		// 		console.error('Error:', error);
 		// 	});
 
-    axios.post(`http://localhost:8080/api/personas/${per.id}`, data, { 
+    axios.post(`${process.env.REACT_APP_PUBLIC_URL}/api/personas/${per.id}`, data, { 
       headers: {
         "Content-Type": "multipart/form-data",
       }
@@ -99,7 +99,7 @@ function App() {
   useEffect(()=>{
     let img = per.picture === null || !per.picture
            ? '.././usr.png'
-           : `http://localhost:8080/api/files/${per.picture}`
+           : `${process.env.REACT_APP_PUBLIC_URL}/api/files/${per.picture}`
   
       setPreviewImage(img)
       
@@ -110,7 +110,7 @@ function App() {
       const data = new FormData();
       data.append('file', file);
 
-      axios.post(`http://localhost:8080/api/personas/${per.id}`, data, { 
+      axios.post(`${process.env.REACT_APP_PUBLIC_URL}/api/personas/${per.id}`, data, { 
         headers: {
           "Content-Type": "multipart/form-data",
         }
@@ -144,6 +144,8 @@ function App() {
     
   }, [file])
   
+
+  console.log(process.env);
 
   return (
     // <Router>

@@ -1,6 +1,6 @@
 export const getPer = async function (nroSoc){
 
-    const url = `http://localhost:8080/api/personas/${nroSoc}`;
+    const url = `${process.env.REACT_APP_PUBLIC_URL}/api/personas/${nroSoc}`;
     
     try {
       const fetchResult   = await fetch(url) // MANEJAR THEN PARA NO MOSTRAR ERR EN CONSOLA
