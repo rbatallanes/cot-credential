@@ -3,13 +3,20 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom';
 import Credential,{loader as getId} from './pages/Credential';
+import Home,{loader as loadHome} from './pages/Home';
 
 
 const router = createBrowserRouter([
   {
+    path: '/home/:id',
+    element: <Home/>,
+    loader: loadHome
+  },
+  {
     path: '/credential/:id',
+    //element: <Navigate  replace to="/home/:id"/>,
     element: <Credential/>,
     loader: getId
   }

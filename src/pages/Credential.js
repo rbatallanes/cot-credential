@@ -11,7 +11,7 @@ import Navbar from 'react-bootstrap/Navbar';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Mensaje from '../components/Mensaje';
-import { useLoaderData, useParams } from 'react-router-dom';
+import { useLoaderData, useParams, useSearchParams } from 'react-router-dom';
 
 
 export async function loader(params){
@@ -46,6 +46,21 @@ const Credential = () => {
   const [file, setFile] = useState(null);
   const [previewImage, setPreviewImage] = useState(null);
   const [cargando, setCargando] = useState(true)
+
+  const [searchParams, setSearchParams] = useSearchParams();
+  
+
+  const removeQueryParams = () => {
+    const param = searchParams.get('id');
+
+    if (param) {
+      // 👇️ delete each query param
+      searchParams.delete('id');
+
+      // 👇️ update state after
+      setSearchParams(searchParams);
+    }
+  };
 
   const onButtonClick = () => {
   //  inputFile.current.click();
@@ -128,11 +143,15 @@ const Credential = () => {
 
 
   return (
+    
     <Card className="bg-dark text-pink" style={{
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
         }}>
+
+        <button onClick={removeQueryParams}>Remove error param</button>
+
         <Card style={{ width: '23rem', margin: '5px'}} >
           
           <Card.Header as="h3" style={{ backgroundColor:'#0066ff'}}>
