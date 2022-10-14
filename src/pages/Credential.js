@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState }  from 'react';
+import React, { useContext, useEffect, useRef, useState }  from 'react';
 
 import { getPer } from '../Services/Persona';
 import Loading from '../components/Loading';
@@ -12,6 +12,7 @@ import Navbar from 'react-bootstrap/Navbar';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Mensaje from '../components/Mensaje';
 import { useLoaderData, useParams, useSearchParams } from 'react-router-dom';
+import SociosContext from '../context/SociosProvider';
 
 
 export async function loader(params){
@@ -31,7 +32,8 @@ export async function loader(params){
 
 const Credential = () => {
 
-  const socio = useLoaderData()
+  const {socio} = useContext(SociosContext)
+  //const socio = useLoaderData()
   //console.log(socio);
 
   const inputFile = useRef(null) 
@@ -46,21 +48,6 @@ const Credential = () => {
   const [file, setFile] = useState(null);
   const [previewImage, setPreviewImage] = useState(null);
   const [cargando, setCargando] = useState(true)
-
-  const [searchParams, setSearchParams] = useSearchParams();
-  
-
-  const removeQueryParams = () => {
-    const param = searchParams.get('id');
-
-    if (param) {
-      // 👇️ delete each query param
-      searchParams.delete('id');
-
-      // 👇️ update state after
-      setSearchParams(searchParams);
-    }
-  };
 
   const onButtonClick = () => {
   //  inputFile.current.click();
@@ -150,8 +137,6 @@ const Credential = () => {
           alignItems: 'center',
         }}>
 
-        <button onClick={removeQueryParams}>Remove error param</button>
-
         <Card style={{ width: '23rem', margin: '5px'}} >
           
           <Card.Header as="h3" style={{ backgroundColor:'#0066ff'}}>
@@ -220,7 +205,7 @@ const Credential = () => {
                   <tr>
                     <td >
                       <Card border="primary">
-                        <Card.Img src={`https://www.codigos-qr.com/qr/php/qr_img.php?d=http%3A%2F%2F190.229.66.64:3000%2Fcredential%2F${per.id}&s=4&e=m`} style={{width: '100%', height: '100px'}} alt='QR'/>
+                        <Card.Img src={`https://www.codigos-qr.com/qr/php/qr_img.php?d=http%3A%2F%2F190.229.66.64:3000%2Fhome%2F${per.id}&s=4&e=m`} style={{width: '100%', height: '100px'}} alt='QR'/>
                       </Card>
                     </td>
                     <td className="text-center">

@@ -6,6 +6,7 @@ import reportWebVitals from './reportWebVitals';
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom';
 import Credential,{loader as getId} from './pages/Credential';
 import Home,{loader as loadHome} from './pages/Home';
+import { SociosProvider } from './context/SociosProvider';
 
 
 const router = createBrowserRouter([
@@ -15,10 +16,10 @@ const router = createBrowserRouter([
     loader: loadHome
   },
   {
-    path: '/credential/:id',
+    path: '/credential',
     //element: <Navigate  replace to="/home/:id"/>,
     element: <Credential/>,
-    loader: getId
+    //loader: getId
   }
 ])
 
@@ -26,7 +27,9 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     {/* <App /> */}
-    <RouterProvider router={router}/>
+    <SociosProvider>
+      <RouterProvider router={router}/>
+    </SociosProvider>
   </React.StrictMode>
 );
 

@@ -1,67 +1,86 @@
-import React, { useEffect } from 'react'
-import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import React, { useContext, useEffect, useState } from 'react'
+import { Button, Card } from 'react-bootstrap';
+import { Link, Navigate, useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import Loading from '../components/Loading';
+import SociosContext from '../context/SociosProvider';
 
 export async function loader(params){
     console.log(params);
     // const socio = params.params.id
     // return socio
-    
   }
 
 const Home = () => {
-    const [searchParams] = useSearchParams();
-    const params = useParams()
+    const {setSocio} = useContext(SociosContext)
+    const [windowSize, setWindowSize] = useState(getWindowSize());
+    const navigate = useNavigate()
 
-    const parametros = {};
-
-    for(let [key, value] of searchParams.entries()) {
-        parametros[key] = value;
-    }
-
-    console.log(parametros);
-
-    // const location = useLocation();
-    // const history = useNavigate();
-
-    // useEffect(() => {
-    //     const queryParams = new URLSearchParams(location.search);
+    const {id} = useParams()
     
-    //     if (queryParams.has("error")) {
-    //       queryParams.delete("error");
-    //       history.replace({
-    //         search: queryParams.toString(),
-    //       });
-    //     }
-    //   }, []);
+    console.log(id);
 
-  const removeQueryParams = () => {
-    const param = searchParams.get('id');
+    useEffect(() => {
+      if(id >0){
+        setSocio(id)
 
-    // if (param) {
-    //   // 👇️ delete each query param
-    //   searchParams.delete('id');
+        setTimeout(() => {
+          navigate('/credential')  
+        }, 500);
+        
+      }
+    
+    }, [id])
+    
 
-    //   // 👇️ update state after
-    //   setSearchParams(searchParams);
-    // }
-  };
 
-  const handleChange = event => {
-    //setSearchParams({q: event.target.value});
-  };
-
-  //console.log(searchParams.get('id'));
-
+    useEffect(() => {
+      function handleWindowResize() {
+        setWindowSize(getWindowSize());
+      }
+  
+      window.addEventListener('resize', handleWindowResize);
+  
+      return () => {
+        window.removeEventListener('resize', handleWindowResize);
+      };
+    }, []);
 
   return (
-    <div>
-        ver: {JSON.stringify(params)}
+    <Card className="text-center" bg ={'dark'} text={'white'} 
+          style={{height: `${windowSize.innerHeight}px`,margin: '0px'}}>
+      <Card.Header>Círculo Odontológico Tucumano</Card.Header>
+      <Card.Body>
+        <Card.Title>Recuperando Datos del socio {id}</Card.Title>
+        <Card.Text>
+          Aguarde un momento...
+        </Card.Text>
+        {/* <Button type="button" 
+                id='buttonHome' 
+                class="btn btn-secondary" 
+                onClick={onButtonClick}
+                style={{backgroundColor:"black"}}>
+          <Link to={`/credential`} style={{color:"white",textDecoration:"none"}}>Avanzar</Link>
+        </Button> */}
+            
+        <Loading/>
+      </Card.Body>
+      <Card.Footer className="text-muted">https://cottucumano.com.ar/</Card.Footer>
+    </Card>
 
-      <button onClick={removeQueryParams}>Remove query param</button>
 
-      <input id="search" autoComplete="off" onChange={handleChange} />
-    </div>
+    // <div>
+    //     ver: {JSON.stringify(params)}
+
+    //   <button onClick={removeQueryParams}>Remove query param</button>
+
+    //   <input id="search" autoComplete="off" onChange={handleChange} />
+    // </div>
   )
+}
+
+function getWindowSize() {
+  const {innerWidth, innerHeight} = window;
+  return {innerWidth, innerHeight};
 }
 
 export default Home
