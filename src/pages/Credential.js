@@ -33,8 +33,6 @@ export async function loader(params){
 const Credential = () => {
 
   const {socio} = useContext(SociosContext)
-  //const socio = useLoaderData()
-  //console.log(socio);
 
   const inputFile = useRef(null) 
   const [per,setPer] = useState({})

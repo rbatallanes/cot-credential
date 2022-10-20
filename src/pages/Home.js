@@ -16,15 +16,14 @@ const Home = () => {
     const navigate = useNavigate()
 
     const {id} = useParams()
-    
-    console.log(id);
 
     useEffect(() => {
       if(id >0){
         setSocio(id)
 
         setTimeout(() => {
-          navigate('/credential')  
+          //navigate('/credential')  
+          navigate('/DigitalCredential')  
         }, 500);
         
       }
@@ -54,10 +53,11 @@ const Home = () => {
         <Card.Text>
           Aguarde un momento...
         </Card.Text>
+
         {/* <Button type="button" 
                 id='buttonHome' 
                 class="btn btn-secondary" 
-                onClick={onButtonClick}
+                //onClick={onButtonClick}
                 style={{backgroundColor:"black"}}>
           <Link to={`/credential`} style={{color:"white",textDecoration:"none"}}>Avanzar</Link>
         </Button> */}

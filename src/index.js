@@ -7,6 +7,7 @@ import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom'
 import Credential,{loader as getId} from './pages/Credential';
 import Home,{loader as loadHome} from './pages/Home';
 import { SociosProvider } from './context/SociosProvider';
+import DigitalCredential from './pages/DigitalCredential';
 
 
 const router = createBrowserRouter([
@@ -20,6 +21,10 @@ const router = createBrowserRouter([
     //element: <Navigate  replace to="/home/:id"/>,
     element: <Credential/>,
     //loader: getId
+  },
+  {
+    path: '/DigitalCredential',
+    element: <DigitalCredential/>
   }
 ])
 
