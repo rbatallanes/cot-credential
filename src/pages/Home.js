@@ -5,7 +5,7 @@ import Loading from '../components/Loading';
 import SociosContext from '../context/SociosProvider';
 
 export async function loader(params){
-    console.log(params);
+    //console.log(params);
     // const socio = params.params.id
     // return socio
   }

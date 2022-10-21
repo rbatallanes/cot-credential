@@ -1,5 +1,6 @@
 import axios from 'axios'
 import React, { useContext, useEffect, useRef, useState } from 'react'
+import { useParams } from 'react-router-dom';
 import { Alert, Card, Col, Container, ListGroup, Navbar, Row, Table } from 'react-bootstrap'
 import Loading from '../components/Loading'
 import Mensaje from '../components/Mensaje'
@@ -7,6 +8,8 @@ import SociosContext from '../context/SociosProvider'
 import { getPer } from '../Services/Persona'
 
 const DigitalCredential = () => {
+
+    //const {id} = useParams()
 
     const {socio} = useContext(SociosContext)
 
@@ -26,7 +29,6 @@ const DigitalCredential = () => {
     const [windowSize, setWindowSize] = useState(getWindowSize());  //  VER
 
     const onButtonClick = () => {
-      //  inputFile.current.click();
         document.getElementById("file").click()
       }
     
@@ -37,13 +39,11 @@ const DigitalCredential = () => {
       }
     
       useEffect(()=>{
-    
         getPer(socio).then(response=>{
           
           setPer(response)
           if(response.picture != null){setImgDefault(false)}
           response.fchBaj === null ? setEstado('Activo') : setEstado('Inactivo')
-          
           
         }).catch(err=>{
             setMsj(err.message)
@@ -52,9 +52,14 @@ const DigitalCredential = () => {
             setTimeout(() => {
                 setMsj('')
             }, 5000);
+        }).finally(()=>{
+          setCargando(false)
         })
-        setCargando(false)
+
       },[])
+
+    
+      
     
       useEffect(()=>{
         let img = per.picture === null || !per.picture
@@ -62,7 +67,6 @@ const DigitalCredential = () => {
                : `${process.env.REACT_APP_PUBLIC_URL}/api/files/${per.picture}`
       
           setPreviewImage(img)
-          
       },[per,previewImage])
     
       useEffect(() => {
@@ -144,12 +148,12 @@ const DigitalCredential = () => {
                 <Card.Title className="text-center" >
                   Círculo Odontológico Tucumano
                 </Card.Title>
-                <Card.Subtitle>Credencial Digital</Card.Subtitle>
+                <Card.Subtitle>Credencial Digital {cargando} </Card.Subtitle>
                 </Container>
               </Container>
         </Navbar> 
       </Card.Header>
-
+      
       {cargando 
             ? <Loading/> 
             : 
@@ -161,22 +165,27 @@ const DigitalCredential = () => {
                     <strong>Agrega tu foto haciendo click en la imagen</strong>
                   </Alert>
                 : <Alert key={'danger'} variant={'danger'} className="text-center m-1">
-                    Llamá al <strong>381422830</strong> para regularizar tu situación
+                  {!per.id
+                    ? <> Ingresá nuevamente para obtener tu credencial digital <br/>
+                      <Alert.Link href="https://cottucumano.com.ar/Club-de-Beneficios/Mi-C%C3%B3digo-QR-Credencial">Hacé click aquí</Alert.Link>
+                      </>
+                    : <>Llamá al <strong>381422830</strong> para regularizar tu situación</>}
+                    
                   </Alert>
               }
     
               {msj && <Mensaje tipo={tipo}>{msj}</Mensaje>}
 
-            
-              
               <Card.Img src=  {previewImage}
-                        style={{width: '10rem',
-                        height: '10rem',
-                        cursor: 'pointer',
-                        objectFit: 'cover'}} 
-                          alt='Socio'/>
-                      <input type='file' id='file' accept="image/png, image/gif, image/jpeg, image/jpg, image/svg" 
-                              style={{display: 'none'}} multiple onChange={handleFileChange}/>
+                          style={{width: '10rem',
+                          height: '10rem',
+                          cursor: 'pointer',
+                          objectFit: 'cover'}} 
+                          alt='Socio'
+                          onClick={onButtonClick}
+              />
+                        <input type='file' id='file' accept="image/png, image/gif, image/jpeg, image/jpg, image/svg"
+                                style={{display: 'none'}} multiple onChange={handleFileChange}/>
               <Card.Title style={{ color: '#0066ff'}}>
                 <strong>{per.apellido || ''} {per.nombre || ''}</strong>
               </Card.Title>
