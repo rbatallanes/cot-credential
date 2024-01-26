@@ -204,7 +204,7 @@ const DigitalCredential = () => {
                 <Row>
                   <Col>
                     
-                      <Card.Img src={`https://www.codigos-qr.com/qr/php/qr_img.php?d=http%3A%2F%2F190.229.66.64:3000%2Fhome%2F${per.id}&s=4&e=m`} 
+                  <Card.Img src={`https://chart.googleapis.com/chart?cht=qr&chl=http%3A%2F%2F190.229.66.64%3A3000%2Fhome%2F${per.id}&chs=180x180&choe=UTF-8&chld=L|2`} 
                         style={{width: '100px', height: '100px'}} 
                         alt='QR'
                         className="square border border-primary"
